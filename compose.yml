@@ -1,0 +1,19 @@
+services:
+  backend:
+    build: .
+    container_name: todo-backend-service
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - mode: ingress
+        target: 8000
+        published: 8000
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: ./core
+        target: /app
+        bind:
+          create_host_path: true
+    environment:
+      SECRET_KEY: "django-insecure-%nrt(mew9a#0h5ef0q2814q3yx8&!=a$nj##vo9rl7gvr(hz-("
+      DEBUG: True
