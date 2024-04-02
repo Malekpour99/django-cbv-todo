@@ -1,3 +1,4 @@
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -58,3 +59,7 @@ class TaskDeleteView(LoginRequiredMixin, DeleteView):
     model = Task
     template_name = "todo/task-list.html"
     success_url = reverse_lazy("todo:tasks")
+
+    def get(self, request, *args, **kwargs):
+        # returning a post request to by-pass the delete confirmation
+        return self.post(request, *args, **kwargs)
