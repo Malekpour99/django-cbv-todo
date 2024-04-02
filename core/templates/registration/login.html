@@ -7,7 +7,7 @@
   
 
 {% block main_content %}
-  <main class="form-signin w-100 m-auto">
+  <main class="form-signin w-100 m-auto mt-5">
     {% if form.errors %}
       <p class="text-danger">Your email and password didn't match! Please try again.</p>
     {% endif %}
@@ -27,6 +27,7 @@
       <input type="hidden" name="next" value="{{ next }}">
 
       <button class="btn btn-primary w-100 py-2" type="submit">Log in</button>
+      <p class="mt-3 text-center">Doesn't Have an account!? <a href="{% url 'register' %}">Register</a> here.</p>
     </form>
   </main>
 {% endblock %}
