@@ -53,12 +53,15 @@
                         "> {{task.title|title}} </td>
                       <td class="col-4">
                         {% if task.is_completed %}
-                          <button type="submit" class="btn btn-warning">Undone</button>
+                          <button class="btn btn-warning">Undone</button>
                         {% else %}
-                          <button type="submit" class="btn btn-success">Done</button>
+                          <button class="btn btn-success">Done</button>
                         {% endif %}
-                        <button type="submit" class="btn btn-primary">Edit</button>
-                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button class="btn btn-primary">Edit</button>
+                        <form class="d-inline" method="post" action="{% url 'todo:delete-task' pk=task.id %}">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
                       </td>
                     </tr>
                   {% endfor %}
