@@ -10,6 +10,7 @@ class TaskListView(LoginRequiredMixin, ListView):
     """
     Showing a list of tasks based on the current user's list of tasks
     """
+
     template_name = "todo/task-list.html"
     context_object_name = "tasks"
 
@@ -22,6 +23,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
     """
     Creating a new task and dedicating this task to the current user
     """
+
     template_name = "todo/task-list.html"
     model = Task
     fields = ["title"]
@@ -30,3 +32,13 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
+
+
+class TaskDeleteView(LoginRequiredMixin, DeleteView):
+    """
+    Deleting specified task
+    """
+
+    model = Task
+    template_name = "todo/task-list.html"
+    success_url = reverse_lazy("todo:tasks")
