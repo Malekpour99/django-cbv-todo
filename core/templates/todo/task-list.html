@@ -60,14 +60,13 @@
                           <a type="button" class="btn btn-success" href="{% url 'todo:complete-task' pk=task.id %}">
                             Done
                           </a>
-                        {% endif %}
-
-                        <button class="btn btn-primary">Edit</button>
-
-                        <form class="d-inline" method="post" action="{% url 'todo:delete-task' pk=task.id %}">
-                          {% csrf_token %}
-                          <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
+                          {% endif %}
+                          
+                          <button class="btn btn-primary">Edit</button>
+                          
+                          <a type="button" class="btn btn-danger" href="{% url 'todo:delete-task' pk=task.id %}">
+                            Delete
+                          </a>
 
                       </td>
                     </tr>
