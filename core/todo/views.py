@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views import View
 from django.views.generic import ListView, CreateView, DeleteView
 from .models import Task
 
@@ -32,6 +33,21 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
+
+
+class TaskStatusView(LoginRequiredMixin, View):
+    """
+    Updating task is_completed status
+    """
+
+    def get(self, request, *args, **kwargs):
+        task = Task.objects.get(id=kwargs.get("pk"))
+        if not task.is_completed:
+            task.is_completed = True
+        else:
+            task.is_completed = False
+        task.save()
+        return redirect(reverse_lazy("todo:tasks"))
 
 
 class TaskDeleteView(LoginRequiredMixin, DeleteView):
