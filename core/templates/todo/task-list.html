@@ -43,14 +43,26 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td class="col-8">Buy groceries for next week</td>
-                    <td class="col-4">
-                      <button type="submit" class="btn btn-success">Done</button>
-                      <button type="submit" class="btn btn-primary">Edit</button>
-                      <button type="submit" class="btn btn-danger">Delete</button>
-                    </td>
-                  </tr>
+                  
+                  {% for task in tasks %}
+                    <tr>
+                      <td class="col-8 
+                      {% if task.is_completed %}
+                        text-decoration-line-through
+                      {% endif %}
+                        "> {{task.title|title}} </td>
+                      <td class="col-4">
+                        {% if task.is_completed %}
+                          <button type="submit" class="btn btn-warning">Undone</button>
+                        {% else %}
+                          <button type="submit" class="btn btn-success">Done</button>
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary">Edit</button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                    
                 </tbody>
               </table>
             </div>
