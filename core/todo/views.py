@@ -1,11 +1,15 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView, CreateView, DeleteView
 from .models import Task
 
 
 # Create your views here.
-class TaskListView(ListView):
+class TaskListView(LoginRequiredMixin, ListView):
+    """
+    Showing a list of tasks based on the current user's list of tasks
+    """
     template_name = "todo/task-list.html"
     context_object_name = "tasks"
 
@@ -14,7 +18,10 @@ class TaskListView(ListView):
         return tasks
 
 
-class TaskCreateView(CreateView):
+class TaskCreateView(LoginRequiredMixin, CreateView):
+    """
+    Creating a new task and dedicating this task to the current user
+    """
     template_name = "todo/task-list.html"
     model = Task
     fields = ["title"]
