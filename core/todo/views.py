@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
-from django.views.generic import ListView, CreateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from .models import Task
 
 
@@ -38,7 +38,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
 
 class TaskStatusView(LoginRequiredMixin, View):
     """
-    Updating task is_completed status
+    Updating task is_completed field status
     """
 
     def get(self, request, *args, **kwargs):
@@ -49,6 +49,17 @@ class TaskStatusView(LoginRequiredMixin, View):
             task.is_completed = False
         task.save()
         return redirect(reverse_lazy("todo:tasks"))
+
+
+class TaskUpdateView(UpdateView):
+    """
+    Updating a specific task
+    """
+
+    template_name = "todo/update-task.html"
+    model = Task
+    fields = ["title"]
+    success_url = reverse_lazy("todo:tasks")
 
 
 class TaskDeleteView(LoginRequiredMixin, DeleteView):
