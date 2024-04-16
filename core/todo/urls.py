@@ -1,4 +1,4 @@
-from django.urls import path, reverse_lazy
+from django.urls import path, include, reverse_lazy
 from django.views.generic import RedirectView
 from .views import (
     TaskListView,
@@ -17,4 +17,5 @@ urlpatterns = [
     path("task/<int:pk>/edit/", TaskUpdateView.as_view(), name="update-task"),
     path("task/<int:pk>/complete/", TaskStatusView.as_view(), name="complete-task"),
     path("task/<int:pk>/delete/", TaskDeleteView.as_view(), name="delete-task"),
+    path("api/v1/", include("todo.api.v1.urls")),
 ]
