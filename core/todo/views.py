@@ -51,7 +51,7 @@ class TaskStatusView(LoginRequiredMixin, View):
         return redirect(reverse_lazy("todo:tasks"))
 
 
-class TaskUpdateView(UpdateView):
+class TaskUpdateView(LoginRequiredMixin, UpdateView):
     """
     Updating a specific task
     """
