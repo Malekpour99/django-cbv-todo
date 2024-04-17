@@ -4,7 +4,7 @@ from django.db import models
 
 
 class Task(models.Model):
-    owner = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
+    owner = models.ForeignKey("accounts.Profile", on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     is_completed = models.BooleanField(default=False)
     created_date = models.DateTimeField(auto_now_add=True)
