@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from .models import Task
+from accounts.models import Profile
 
 
 # Create your views here.
@@ -17,7 +18,7 @@ class TaskListView(LoginRequiredMixin, ListView):
     context_object_name = "tasks"
 
     def get_queryset(self):
-        tasks = Task.objects.filter(owner=self.request.user)
+        tasks = Task.objects.filter(owner__user__id=self.request.user.id)
         return tasks
 
 
@@ -32,7 +33,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("todo:tasks")
 
     def form_valid(self, form):
-        form.instance.owner = self.request.user
+        form.instance.owner = Profile.objects.get(user__id=self.request.user.id)
         return super().form_valid(form)
 
 
