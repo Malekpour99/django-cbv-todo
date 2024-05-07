@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'accounts',
     'todo',
     'rest_framework',
+    'rest_framework.authtoken',
     'django_filters',
     'drf_yasg',
 ]
@@ -142,3 +143,12 @@ AUTH_USER_MODEL = 'accounts.User'
 
 # Successful login redirection configuration (in case next parameter is not specified)
 LOGIN_REDIRECT_URL = reverse_lazy('todo:home')
+
+# REST Framework global configuration
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
