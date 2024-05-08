@@ -9,4 +9,7 @@ urlpatterns = [
     # Token
     path("token/login/", views.CustomObtainAuthToken.as_view(), name="token-login"),
     path("token/logout/", views.CustomDiscardAuthToken.as_view(), name="token-logout"),
+    # JWT
+    path("jwt/create/", views.CustomTokenObtainPairView.as_view(), name="jwt-create"),
+
 ]
