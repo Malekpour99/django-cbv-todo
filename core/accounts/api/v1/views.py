@@ -5,6 +5,7 @@ from .serializers import (
     RegistrationSerializer,
     CustomAuthTokenSerializer,
     ChangePasswordSerializer,
+    CustomTokenObtainPairSerializer,
 )
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
@@ -13,6 +14,8 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 
 User = get_user_model()
 
@@ -92,3 +95,7 @@ class CustomDiscardAuthToken(APIView):
             return Response(
                 {"detail": "Token does not exist"}, status=status.HTTP_404_NOT_FOUND
             )
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
