@@ -6,6 +6,7 @@ from .serializers import (
     CustomAuthTokenSerializer,
     ChangePasswordSerializer,
     CustomTokenObtainPairSerializer,
+    ActivationResendSerializer,
 )
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
@@ -154,3 +155,19 @@ class ActivationAPIView(APIView):
         user_obj.is_verified = True
         user_obj.save()
         return Response({"details": "Your account has been verified and activated"})
+
+
+class ActivationResendAPIView(GenericAPIView):
+    """Resending JWT authentication token for user activation"""
+
+    serializer_class = ActivationResendSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user_obj = serializer.validated_data["user"]
+        EmailSender.send_activation_email(request, user_obj)
+        return Response(
+            {"details": "Activation link resend was successful"},
+            status=status.HTTP_200_OK,
+        )
