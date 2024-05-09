@@ -107,10 +107,14 @@ class CustomDiscardAuthToken(APIView):
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
+    """Obtaining JWT pairs for user"""
+
     serializer_class = CustomTokenObtainPairSerializer
 
 
 class EmailSender:
+    """Sending email to users"""
+
     @staticmethod
     def send_activation_email(request, user):
         """Send activation email to the user"""
@@ -128,7 +132,7 @@ class EmailSender:
 
     @staticmethod
     def get_tokens_for_user(user):
-        """Return an access token based on the user"""
+        """Return an access token (JWT) based on the user"""
         refresh = RefreshToken.for_user(user)
         return str(refresh.access_token)
 
