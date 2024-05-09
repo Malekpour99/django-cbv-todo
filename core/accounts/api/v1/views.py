@@ -7,9 +7,10 @@ from .serializers import (
     ChangePasswordSerializer,
     CustomTokenObtainPairSerializer,
     ActivationResendSerializer,
+    ProfileSerializer,
 )
 from rest_framework import status
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, RetrieveUpdateAPIView
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -22,6 +23,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from mail_templated import EmailMessage
 from ..utils import EmailThread
 import jwt
+from accounts.models import Profile
 
 
 User = get_user_model()
@@ -177,3 +179,15 @@ class ActivationResendAPIView(GenericAPIView):
             {"details": "Activation link resend was successful"},
             status=status.HTTP_200_OK,
         )
+
+
+class ProfileAPIView(RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
+    def get_object(self):
+        # Since we only need one object, we override the get_object method instead of get_queryset
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, user=self.request.user)
+        return obj
