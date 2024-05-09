@@ -11,8 +11,8 @@ admin.site.register(Profile)
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
     model = User
-    list_display = ("email", "is_superuser", "is_active", "created_date")
-    list_filter = ("email", "is_superuser", "is_active")
+    list_display = ("email", "is_superuser", "is_active", "is_verified", "created_date")
+    list_filter = ("email", "is_superuser", "is_active", "is_verified")
     fieldsets = (
         (
             "Authentication",
@@ -28,6 +28,7 @@ class CustomUserAdmin(UserAdmin):
             {
                 "fields": (
                     "is_active",
+                    "is_verified",
                     "is_staff",
                     "is_superuser",
                     "user_permissions",
@@ -52,6 +53,7 @@ class CustomUserAdmin(UserAdmin):
                     "password1",
                     "password2",
                     "is_active",
+                    "is_verified",
                     "is_staff",
                     "is_superuser",
                 ),
