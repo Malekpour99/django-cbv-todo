@@ -9,12 +9,18 @@ from .serializers import (
 )
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
-from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.shortcuts import get_object_or_404
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.views import TokenObtainPairView
+from django.contrib.sites.shortcuts import get_current_site
+from mail_templated import EmailMessage
+from ..utils import EmailThread
+import jwt
 
 
 User = get_user_model()
@@ -99,3 +105,25 @@ class CustomDiscardAuthToken(APIView):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+    
+class EmailSender:
+    @staticmethod
+    def send_activation_email(request, user):
+        """Send activation email to the user"""
+        token = EmailSender.get_tokens_for_user(user)
+        current_site = get_current_site(request)
+        protocol = "https" if request.is_secure() else "http"
+        domain = current_site.domain
+        email_obj = EmailMessage(
+            "email/activation-email.tpl",
+            {"protocol": protocol, "domain": domain, "token": token},
+            "admin@admin.com",
+            to=[user.email],
+        )
+        EmailThread(email_obj).start()
+
+    @staticmethod
+    def get_tokens_for_user(user):
+        """Return an access token based on the user"""
+        refresh = RefreshToken.for_user(user)
+        return str(refresh.access_token)
