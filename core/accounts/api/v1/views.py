@@ -182,6 +182,8 @@ class ActivationResendAPIView(GenericAPIView):
 
 
 class ProfileAPIView(RetrieveUpdateAPIView):
+    """Getting authenticated user's profile data"""
+
     permission_classes = [IsAuthenticated]
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
