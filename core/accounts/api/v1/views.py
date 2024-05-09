@@ -39,6 +39,8 @@ class UserRegistration(GenericAPIView):
         serializer.save()
         email = serializer.validated_data["email"]
         data = {"email": email}
+        user_obj = get_object_or_404(User, email=email)
+        EmailSender.send_activation_email(request, user_obj)
         # Prevention of receiving hashed password in the serializer.data
         return Response(data, status=status.HTTP_201_CREATED)
 
