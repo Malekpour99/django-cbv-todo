@@ -105,7 +105,8 @@ class CustomDiscardAuthToken(APIView):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
-    
+
+
 class EmailSender:
     @staticmethod
     def send_activation_email(request, user):
@@ -127,3 +128,29 @@ class EmailSender:
         """Return an access token based on the user"""
         refresh = RefreshToken.for_user(user)
         return str(refresh.access_token)
+
+
+class ActivationAPIView(APIView):
+    """Decoding JWT authentication token and activating user account"""
+
+    def get(self, request, token, *args, **kwargs):
+        try:
+            token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            user_id = token.get("user_id", None)
+        except jwt.exceptions.ExpiredSignatureError:
+            return Response(
+                {"details": "Token has been expired"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except jwt.exceptions.InvalidSignatureError:
+            return Response(
+                {"details": "Token is not valid"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        user_obj = User.objects.get(pk=user_id)
+        if user_obj.is_verified:
+            return Response(
+                {"details": "Your account has already been verified and is active"}
+            )
+        user_obj.is_verified = True
+        user_obj.save()
+        return Response({"details": "Your account has been verified and activated"})
