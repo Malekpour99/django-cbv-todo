@@ -29,4 +29,6 @@ urlpatterns = [
         views.ActivationResendAPIView.as_view(),
         name="activation-resend",
     ),
+    # Profile ---------------------------------------------------
+    path("profile/", views.ProfileAPIView.as_view(), name="profile"),
 ]
