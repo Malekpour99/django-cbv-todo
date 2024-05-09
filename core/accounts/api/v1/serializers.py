@@ -93,3 +93,20 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         validated_data["email"] = self.user.email
         validated_data["user_id"] = self.user.id
         return validated_data
+
+
+class ActivationResendSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
+    def validate(self, attrs):
+        email = attrs.get("email")
+        try:
+            user_obj = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError({"detail": "User does not exist"})
+        if user_obj.is_verified:
+            raise serializers.ValidationError(
+                {"detail": "User is already verified and activated"}
+            )
+        attrs["user"] = user_obj
+        return super().validate(attrs)
