@@ -5,6 +5,8 @@ from django.core import exceptions
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.conf import settings
+import jwt
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -118,3 +120,39 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ["id", "email", "first_name", "last_name", "bio", "image"]
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
+    def validate(self, attrs):
+        email = attrs.get("email")
+        # if email does not exist then user_obj will be None
+        user_obj = User.objects.filter(email__iexact=email).first()
+        attrs["user"] = user_obj
+        return super().validate(attrs)
+
+
+class ResetPasswordConfirmSerializer(serializers.Serializer):
+    token = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+    confirm_password = serializers.CharField(required=True)
+
+    def validate(self, attrs):
+        token = attrs.get("token")
+        try:
+            decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            user_id = decoded_token.get("user_id", None)
+        except jwt.exceptions.ExpiredSignatureError:
+            raise serializers.ValidationError({"detail": "Token has been expired"})
+        except jwt.exceptions.InvalidSignatureError:
+            raise serializers.ValidationError({"detail": "Token is not valid"})
+        if attrs.get("password") != attrs.get("confirm_password"):
+            raise serializers.ValidationError({"detail": "Passwords do not match!"})
+
+        try:
+            validate_password(attrs.get("password"))
+        except exceptions.ValidationError as e:
+            raise serializers.ValidationError({"new_password": list(e.messages)})
+        attrs["uid"] = user_id
+        return super().validate(attrs)
