@@ -11,6 +11,21 @@ urlpatterns = [
         views.ChangePasswordAPIView.as_view(),
         name="change-password",
     ),
+    path(
+        "reset-password/",
+        views.ResetPasswordAPIView.as_view(),
+        name="reset-password",
+    ),
+    path(
+        "reset-password/validate/<str:token>",
+        views.ResetPasswordValidateAPIView.as_view(),
+        name="reset-password-validate",
+    ),
+    path(
+        "reset-password/confirm/",
+        views.ResetPasswordConfirmAPIView.as_view(),
+        name="reset-password-confirm",
+    ),
     # Token ---------------------------------------------------
     path("token/login/", views.CustomObtainAuthToken.as_view(), name="token-login"),
     path("token/logout/", views.CustomDiscardAuthToken.as_view(), name="token-logout"),
