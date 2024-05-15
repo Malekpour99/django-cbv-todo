@@ -11,7 +11,7 @@ class RegisterView(FormView):
     """
     Managing registration of new users
     """
-    
+
     template_name = "registration/register.html"
     form_class = CustomUserCreationForm
     success_url = reverse_lazy("todo:tasks")

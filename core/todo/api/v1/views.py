@@ -20,6 +20,6 @@ class TaskModelViewSet(viewsets.ModelViewSet):
     filterset_fields = ["is_completed", "created_date"]
     search_fields = ["title"]
     ordering_fields = ["created_date", "is_completed"]
-    
+
     def get_queryset(self):
         return Task.objects.filter(owner__user__id=self.request.user.id)
