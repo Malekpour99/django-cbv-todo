@@ -1,6 +1,5 @@
 from django.db import models
 from .users import User
-from django.utils.translation import gettext_lazy as _
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 

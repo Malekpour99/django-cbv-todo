@@ -17,7 +17,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model
@@ -225,7 +225,8 @@ class ResetPasswordAPIView(GenericAPIView):
             EmailSender.send_resetpassword_email(request, user_obj)
         return Response(
             {
-                "details": "We have sent a reset password link for you. if you didn't receive it, check your email address or spam"
+                "details": "reset password link was sent to you."
+                # if you didn't receive it, check your email address or spam
             }
         )
 
@@ -236,7 +237,7 @@ class ResetPasswordValidateAPIView(APIView):
     def get(self, request, token, *args, **kwargs):
         valid_token = False
         try:
-            decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
         except jwt.exceptions.ExpiredSignatureError:
             return Response(
                 {"details": "Token has been expired", "valid_token": valid_token},
