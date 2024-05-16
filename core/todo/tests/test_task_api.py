@@ -113,16 +113,41 @@ class TestTaskAPI:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert Task.objects.get(pk=common_task.id).title == common_task.title
 
+    def test_update_not_owned_task_response_404_status(self, api_client, common_task):
+        """Updating a task owned by common user"""
+        another_user = get_user_model().objects.create_user(
+            email="another_user@mail.com", password="anotherPassword", is_verified=True
+        )
+        url = reverse("todo:api-v1:task-detail", kwargs={"pk": common_task.id})
+        data = {"title": "updated task"}
+        api_client.force_login(user=another_user)
+        response = api_client.put(url, data, format="json")
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+
     def test_update_task_response_200_status(
         self, api_client, common_user, common_task
     ):
         """Updating a task with an authenticated user"""
         url = reverse("todo:api-v1:task-detail", kwargs={"pk": common_task.id})
-        data = {"title": "updated task"}
+        data = {"title": "updated task", "is_completed": True}
         api_client.force_login(user=common_user)
         response = api_client.put(url, data, format="json")
         assert response.status_code == status.HTTP_200_OK
         assert not Task.objects.get(pk=common_task.id).title == common_task.title
+        assert Task.objects.get(pk=common_task.id).title == "updated task"
+        assert not Task.objects.get(pk=common_task.id).is_completed == common_task.title
+        assert Task.objects.get(pk=common_task.id).is_completed == True
+
+    def test_update_task_partial_update_response_200_status(
+        self, api_client, common_user, common_task
+    ):
+        """Partially updating a task with an authenticated user"""
+        url = reverse("todo:api-v1:task-detail", kwargs={"pk": common_task.id})
+        data = {"title": "updated task"}
+        api_client.force_login(user=common_user)
+        response = api_client.patch(url, data, format="json")
+        assert response.status_code == status.HTTP_200_OK
+        assert Task.objects.get(pk=common_task.id).title == "updated task"
 
     # Deleting Single Task --------------------------------------------------
     def test_delete_task_response_401_status(self, api_client, common_task):
