@@ -136,7 +136,7 @@ class TestTaskAPI:
         assert not Task.objects.get(pk=common_task.id).title == common_task.title
         assert Task.objects.get(pk=common_task.id).title == "updated task"
         assert not Task.objects.get(pk=common_task.id).is_completed == common_task.title
-        assert Task.objects.get(pk=common_task.id).is_completed == True
+        assert Task.objects.get(pk=common_task.id).is_completed is True
 
     def test_update_task_partial_update_response_200_status(
         self, api_client, common_user, common_task
