@@ -13,7 +13,8 @@ services:
   backend:
     build: .
     container_name: todo-backend-service
-    command: python manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000 & celery -A core beat"
     ports:
       - mode: ingress
         target: 8000
