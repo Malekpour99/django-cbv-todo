@@ -182,3 +182,6 @@ SIMPLE_JWT = {
 
 # CROS Headers configuration
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Celery Configuration
+CELERY_BROKER_URL = "redis://redis:6379/1"
