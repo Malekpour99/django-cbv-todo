@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.decorators.cache import cache_page
 
 import requests
 
@@ -79,6 +80,7 @@ class TaskDeleteView(LoginRequiredMixin, DeleteView):
         return self.post(request, *args, **kwargs)
 
 
+@cache_page(60 * 20)
 def weather_status_view(request):
     """View for Tehran Weather Report"""
     # Tehran Latitude
