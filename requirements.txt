@@ -21,5 +21,8 @@ flake8
 pytest
 pytest-django
 
+# Cache
+django-redis
+
 # Fake Data
 Faker
