@@ -1,4 +1,14 @@
 services:
+  redis:
+    container_name: todo-redis
+    image: redis
+    command: redis-server --save 60 1 --loglevel warning
+    ports:
+      - mode: ingress
+        target: 6379
+        published: 6379
+        protocol: tcp
+
   backend:
     build: .
     container_name: todo-backend-service
@@ -14,9 +24,12 @@ services:
         target: /app
         bind:
           create_host_path: true
+    depends_on:
+      - redis
     environment:
       SECRET_KEY: "django-insecure-%nrt(mew9a#0h5ef0q2814q3yx8&!=a$nj##vo9rl7gvr(hz-("
       DEBUG: True
+
   smtp4dev:
     image: rnwood/smtp4dev:v3
     ports:
