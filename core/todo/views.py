@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 
 import requests
 
@@ -92,9 +93,33 @@ def weather_status_view(request):
     response = requests.get(
         f"https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&units=metric&appid={API_KEY}"
     )
-    print(response.__dict__)
     if response.status_code == 200:
         weather_report = response.json()
+    else:
+        weather_report = None
+    context = {"weather_report": weather_report}
+    return render(request, "todo/weather.html", context)
+
+
+def weather_status_view_2(request):
+    """View for Tehran Weather Report - Manual Caching"""
+
+    if cached_response := cache.get("weather_report_cache"):
+        context = {"weather_report": cached_response}
+        return render(request, "todo/weather.html", context)
+
+    # Tehran Latitude
+    latitude = "35.6944"
+    # Tehran Longitude
+    longitude = "51.4215"
+    # Open Weather account API key
+    API_KEY = "267a2f751f81f0cfed52040be37fc89c"
+    response = requests.get(
+        f"https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&units=metric&appid={API_KEY}"
+    )
+    if response.status_code == 200:
+        weather_report = response.json()
+        cache.set("weather_report_cache", weather_report, 60 * 20)
     else:
         weather_report = None
     context = {"weather_report": weather_report}
