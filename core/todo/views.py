@@ -1,8 +1,11 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+
+import requests
+
 from .models import Task
 from accounts.models import Profile
 
@@ -74,3 +77,23 @@ class TaskDeleteView(LoginRequiredMixin, DeleteView):
     def get(self, request, *args, **kwargs):
         # returning a post request to by-pass the delete confirmation
         return self.post(request, *args, **kwargs)
+
+
+def weather_status_view(request):
+    """View for Tehran Weather Report"""
+    # Tehran Latitude
+    latitude = "35.6944"
+    # Tehran Longitude
+    longitude = "51.4215"
+    # Open Weather account API key
+    API_KEY = "267a2f751f81f0cfed52040be37fc89c"
+    response = requests.get(
+        f"https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&units=metric&appid={API_KEY}"
+    )
+    print(response.__dict__)
+    if response.status_code == 200:
+        weather_report = response.json()
+    else:
+        weather_report = None
+    context = {"weather_report": weather_report}
+    return render(request, "todo/weather.html", context)
