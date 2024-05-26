@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main_content %}
+  <section class="h-100 w-100" style="background-color: #eee;">
+    <div class="container py-2 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col col-lg-12 col-xl-12">
+          <div class="card rounded-3">
+            <div class="card-body p-4">
+              <h4 class="text-center my-3 pb-3">«Weather»</h4>
+              <div class="text-center">
+                {% if weather_report %}
+                  <p class="fs-4">City: {{ weather_report.name }}</p>
+                  <p class="fs-4">Weather Condition: {{ weather_report.weather.0.description }}</p>
+                  <p class="fs-4">Temperature: {{ weather_report.main.temp }}</p>
+                  <p class="fs-4">Wind speed: {{ weather_report.wind.speed }}</p>
+                {% else %}
+                  <p class="fs-4">Sorry, weather report was not availabe. Please try again!</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
