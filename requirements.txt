@@ -11,6 +11,9 @@ drf-yasg[validation]
 djangorestframework-simplejwt
 django-cors-headers
 
+# Deployment
+gunicorn
+
 # Email templates
 django-mail-templated
 
