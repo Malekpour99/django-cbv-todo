@@ -7,6 +7,7 @@ services:
         target: 6379
         published: 6379
         protocol: tcp
+    restart: always
 
   backend:
     build: .
@@ -24,6 +25,7 @@ services:
       - media_volume:/app/media
     depends_on:
       - redis
+    restart: always
     environment:
       SECRET_KEY: django-insecure-q7r1r^3_#xp2sp+p=tyn=$s=7!s-i3v%q902b9h@ha64&gk8u&
       DEBUG: False
@@ -40,6 +42,7 @@ services:
     depends_on:
       - redis
       - backend
+    restart: always
 
   nginx:
     image: nginx
@@ -59,6 +62,7 @@ services:
     depends_on:
      - redis
      - backend
+    restart: always
 
 volumes:
   static_volume:
